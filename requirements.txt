@@ -1,0 +1,13 @@
+line-bot-sdk
+django
+gunicorn
+django-heroku
+datetime
+Pillow
+django-import-export
+apiai
+pymysql
+sqlalchemy
+pandas
+bs4
+matplotlib

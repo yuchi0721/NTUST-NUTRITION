@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% block title %}自訂紀錄飲食{% endblock %}
+{% block div %}
+{%load static%}
+<style type="text/css">
+	.label{
+		width: 80%;
+
+	}
+	.button{
+		width: 20%;
+	}
+	#displayName{
+		color: white;
+	}
+</style>
+<form action="/nutritionweb/diet/" method="POST" name="food_form">
+<table  width="100%" style="text-align: center; ">
+	{% csrf_token %}
+	<tr>
+		<td>
+			<div class="group" >
+				<img class="label" src="{% static 'images/label8.png' %}">
+				
+			</div>
+		</td>
+		<td>
+			<div id="suserPicture">
+				<img  id="userPicture" style="width: 20%;border-radius: 50%;" src="">
+				<label id="displayName"></label>
+			</div>
+		</td>
+	</tr>
+	<tr><td><div class="group" >
+				<img class="label" src="{% static 'images/label7.png' %}">
+			</div></td><td><input type="date"  name="datepicker" id="datepicker"   ></td></tr>
+	<tr><td><div class="group" >
+				<img class="label" src="{% static 'images/label1.png' %}">
+			</div></td><td><input type="text"  class="userInput" name="food_name" id="food_name" value="{{food_name}}"></td></tr>
+	<tr><td><div class="group" >
+				<img class="label" src="{% static 'images/label2.png' %}">
+			</div></td><td><input type="text"  class="userInput" name="food_quantity" id="food_quantity" ></td></tr>
+	<tr><td><div class="group" >
+				<img class="label" src="{% static 'images/label3.png' %}">
+			</div></td><td><input type="text"  class="userInput" name="food_power" id="food_power" value="{{food.food_power}}"></td></tr>
+	<tr><td><div class="group" >
+				<img class="label" src="{% static 'images/label4.png' %}">
+			</div></td><td><input type="text"  class="userInput" name="food_protein" id="food_protein" value="{{food.food_protein}}"></td></tr>
+	<tr><td><div class="group" >
+				<img class="label" src="{% static 'images/label5.png' %}">
+			</div></td><td><input type="text"  class="userInput" name="food_carbohydrate" id="food_carbohydrate" value="{{food.food_carbohydrate}}"></td></tr>
+	<tr><td><div class="group" >
+				<img class="label" src="{% static 'images/label6.png' %}">
+			</div></td><td><input type="text"  class="userInput" name="food_fat" id="food_fat" value="{{food.food_fat}}" ></td></tr>
+	<tr><td colspan="2"><img class="button" id="adding" src="{% static 'images/addbutton.png' %}"></td></tr>
+	<select id="userId" name="userId" ><option id="Id" ></option></select>
+</table>
+</form> 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+<script>
+	//$(document).ready(function(){$('.datepicker').datepicker();});
+	// var rule1=/\d/;
+				 
+	$(document).ready(function(){
+		rule1=/\d/;
+		rule2=/./;
+		$('#userId').hide();
+		liff.init({liffId: "1653914885-DLXGeq3b"}).then(() => {
+				 	liff.ready.then(() => {
+				 		getProfile();
+				 		defaultDate();		 		
+				 	}).catch((err) => {
+				 	alert(err);
+				 	});
+				 }).catch((err) => {
+				 	alert(err);
+				 	});
+		$("#adding").click(function(){
+			if($("#food_name").val()=="" || $("#food_quantity").val()==""||$("#food_power").val()==""||$("#food_protein").val()==""||$("#food_carbohydrate").val()==""||$("#food_fat").val()==""||$("#datepicker").val()==""){
+				 		alert("尚未填寫資料完全");}
+			else if(!rule2.test($("#food_name").val()) ||!rule1.test($("#food_quantity").val()) ||!rule1.test($("#food_power").val())||!rule1.test($("#food_carbohydrate").val())||!rule1.test($("#food_fat").val())||!rule1.test($("#food_protein").val())){
+				 		alert("請輸入正確格式");
+				 		}
+			else if ($("#food_quantity").val() <= 0 ) {
+				 			alert("輸入數值需>0!!!!");
+				 		}
+			else{document.food_form.submit();alert('已成功新增資料!')}
+
+			
+		});
+		
+	
+	});
+
+// Get profile and display
+	function getProfile(){
+		liff.getProfile().then(function (profile) {
+			document.getElementById('userPicture').src = profile.pictureUrl;
+			document.getElementById('displayName').textContent = profile.displayName;
+			document.getElementById('Id').value = profile.userId;
+		}).catch(function (error) {
+			window.alert("Error getting profile: " + error);
+		});
+	}
+	function defaultDate(){
+		
+		var date = new Date(); 
+		var year =date.getFullYear();
+		
+		if (date.getMonth()<10) {
+			var month="0"+(date.getMonth()+1);
+		}else{
+			var month=date.getMonth()+1;
+		}
+		if (date.getDate() <10) {
+			var day ="0"+date.getDate();
+		}else{
+			var month=date.getDate();
+		}
+		var dateString = year+"-"+month+"-"+day;
+		document.getElementById("datepicker").value=dateString;
+	}
+
+
+
+</script>
+{% endblock %}

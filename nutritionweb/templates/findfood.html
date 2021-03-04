@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}紀錄飲食{% endblock %}
+{% block div %}
+<style type="text/css">
+	.find{
+		margin: 10px;
+	}
+</style>
+<form action="/nutritionweb/findfood/" method="POST" name="findfood">
+{% csrf_token %}
+<div>
+	<p><img style="border-radius: 50%;width:15% "  id="userPicture" src=""><label id="displayName"></label> 吃了什麼呢?</p>
+	<input class="find" type="text" name="food_name">
+	<br>
+	<input  class="find" type="submit" value="確認">
+</div>
+</form>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+<script>
+	//$(document).ready(function(){$('.datepicker').datepicker();});
+	
+	$(document).ready(function(){
+		
+		liff.init({liffId: "1653914885-DLXGeq3b"}).then(() => {
+				 	liff.ready.then(() => {
+				 		getProfile();
+				 	}).catch((err) => {
+				 	alert(err);
+				 	});
+				 }).catch((err) => {
+				 	alert(err);
+				 	});
+	
+	});
+
+// Get profile and display
+	function getProfile(){
+		liff.getProfile().then(function (profile) {
+			document.getElementById('userPicture').src = profile.pictureUrl;
+			document.getElementById('displayName').textContent = profile.displayName;
+		}).catch(function (error) {
+			window.alert("Error getting profile: " + error);
+		});
+	}
+
+
+</script>
+
+{%load static%}
+{% endblock %}

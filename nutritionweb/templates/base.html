@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="0">
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=0.7, minimum-scale=0.7, maximum-scale=0.7" >
+	<title>{% block title %}{% endblock %}</title>
+	<style type="text/css">
+		#logo{
+			width:70%;
+		}
+		#userData_div{
+			background-color: rgb(234,130,68);
+			color: white;
+			font-weight: bold;
+			font-family: Microsoft JhengHei;
+			border-radius: 10px;
+
+			}
+		#logo_div{
+			font-size: 30px;
+			font-family: Microsoft JhengHei;
+			font-weight: bold;
+			color: white;
+		}
+		.userInput{
+			border-radius: 5px;
+		}
+		.valid-feedback{
+
+			color:green;
+
+		}
+		.invalid-feedback{
+			color:red;
+		}
+		.logoContainer{
+			text-align: center;
+			margin-top: 20%;
+		}
+		.container{
+			text-align: center;
+			margin-top: 10%;
+		}
+		.bt{
+			background-color: gray;
+			width: 50px;
+		}
+
+		body {
+			background-color:rgb(46,46,46);
+		}
+	</style>
+	{%load static%}
+</head>
+<body >
+<center>
+	<div class="logoContainer" >
+		<div id="logo_div"><img src="{% static 'images/LOGO2.png' %}" id="logo"></div>
+	</div>
+
+	<div class="container">
+
+		<div id="userData_div" >
+			{%block div%}{%endblock%}
+		</div>
+	</div>
+	
+</div></center>
+
+</body>
+
+
+</html>

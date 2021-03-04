@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% block title %}新增個人資料{% endblock %}
+{%block div%}
+{% load static %}
+<form action="." method="POST" name="form1" id="form1" onclick="return false">
+		{% csrf_token %}
+		<div id="form_group" style="padding-top: 10px;">
+			<label class="forName">用戶：</label><select id="userName" name="userName"><option id="lineUser"></option></select>
+      	</div>
+      	<div id="form_group_Id">
+			<label class="forName">Id：</label><select id="userId" name="userId"><option id="Id"></option></select>
+      	</div>
+      	<div id="form_group">
+      		<label class="forName">年齡：</label><input type="text"  class="userInput" name="userAge" id="userAge" required><span  class='error1'></span><br>
+      	</div>
+      	<div id="form_group">
+      		<label class="forName">性別：</label><select id="userGender" name="userGender"><option value="Male">Male</option><option value="Female">Female</option></select>
+      	</div>
+      	<div id="form_group">
+      		<label class="forName">身高：</label><input type="text" class="userInput" name="userHeight"  id="userHeight" ><span class='error2'></span><br>
+      	</div>
+      	<div id="form_group">
+      		<label class="forName">體重：</label><input type="text" class="userInput" name="userWeight"  id="userWeight" ><span class='error3'></span><br>
+      	</div>
+      	<div class="postButton">
+      		<img style="width: 25%;" id="adding" src="{% static 'images/addbutton.png' %}">
+      		<label class="userId" id="userId"></label>
+      	</div>
+
+
+	</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+
+
+		<script >
+			// (function() {
+			// 	'use strict';
+			// 	window.addEventListener('load', function() {
+			// 		var forms = document.getElementsByClassName('needs-validation');
+			// 		var validation = Array.prototype.filter.call(forms, function(form) {
+			// 			form.addEventListener('submit', function(event) {
+			// 				if (form.checkValidity() === false) {
+			// 					event.preventDefault();
+			// 					event.stopPropagation();
+			// 				}
+			// 				form.classList.add('was-validated');
+			// 			}, false);
+			// 		});
+			// 	}, false);
+			// })();
+
+			function getProfile(){
+				if (liff.isLoggedIn()) {
+					liff.getProfile().then(profile=>{
+						document.getElementById('lineUser').textContent=profile.displayName;
+						document.getElementById('lineUser').value=profile.displayName;
+						document.getElementById('Id').textContent=profile.userId;
+						document.getElementById('Id').value=profile.userId;
+					}).catch((err) => {
+				 	alert(err);
+				 	});
+				}
+			}
+			function bmiDefined(bmi){
+				if (bmi<18.5) {
+					return " (過輕) "
+				}else if(bmi>=18.5 && bmi<24){
+					return " (正常) "
+				}
+				else if(bmi<=24 && bmi<27){
+					return " (過重) "
+				}else if(bmi>=27){
+					return " (肥胖) "
+				}
+			}
+			function formatUserDate(){
+				var username=document.getElementById('lineUser').value
+			    var usergender=document.getElementById('userGender').value
+				var userage=document.getElementById('userAge').value
+				var userheight=document.getElementById('userHeight').value
+				var userweight=document.getElementById('userWeight').value
+				var userbmi=Math.round(userweight/Math.pow(userheight/100,2))
+				var bmidefined=bmiDefined(userbmi);
+				return "已成功儲存個人資料~ \n我的大名: "+username+"\n性別："+usergender+"\n年齡："+userage+"歲\n身高："+userheight+"公分\n體重："+userweight+"公斤\nBMI : "+userbmi+bmidefined
+			}
+			$(document).ready(function(){
+				
+				liff.init({liffId: "1653914885-7WyoVbml"}).then(() => {
+				 	liff.ready.then(() => {
+				 		getProfile();
+				 	}).catch((err) => {
+				 	alert(err);
+				 	});
+				 }).catch((err) => {
+				 	alert(err);
+				 	});
+				 $("#form_group_Id").hide();
+				 var rule1=/\d/;
+				 $("#adding").click(function(){
+				 	if($("#userAge").val()=="" || $("#userWeight").val()==""||$("#userHeight").val()==""){
+				 		alert("尚未填寫資料完全");
+				 	}else if(!rule1.test($("#userAge").val()) ||!rule1.test($("#userWeight").val()) ||!rule1.test($("#userHeight").val())){
+				 		alert("請輸入數字");
+				 		}
+				 		else if ($("#userAge").val() <= 0 || $("#userWeight").val()<= 0||$("#userHeight").val()<= 0) {
+				 			alert("輸入數值需>0!!!!");
+				 		}
+				 		else{
+				 			
+				 			txt1='新增個人資料\n使用者編號:'+document.getElementById('Id').value
+				 			var sended=false;
+				 			//txt = formatUserDate();
+				 			if (liff.getOS()=="ios") {
+				 				document.form1.submit();
+				 				liff.sendMessages([
+				 				{type:'text',
+				 				text:txt1}
+				 				]).then(() => {
+				 				}).catch((err) => {
+				 					alert(err);
+				 				});
+				 				alert("成功新增個人資料，可以關閉視窗囉~");
+				 				
+				 			}else{
+				 				txt1='新增個人資料\n使用者編號:'+document.getElementById('Id').value
+				 				document.form1.submit();
+				 				liff.sendMessages([
+				 				{type:'text',
+				 				text:txt1}
+				 				]).then(() => {
+				 					liff.closeWindow();
+				 				}).catch((err) => {
+				 					alert(err);
+				 				});
+				 			};
+
+				 			}
+				 		});
+				 $('.userInput').focus(function(){
+				 	$(this).css("border-color","#006cff")
+				 });
+				 $("#userAge").blur(function(){
+				 	if(rule1.test($(this).val())){
+				 		if ($(this).val() >0) {$('.error1').text('\nCorrect!')
+				 			$(this).css("border-color","green")
+				 		$('.error1').css("color","green")}
+				 		else{
+				 			$('.error1').text(' Wrong!')
+				 			$('.error1').css("color","red")
+				 			$(this).css("border-color","red")
+				 		}
+				 	}else{
+				 		$('.error1').text(' Wrong!')
+				 		$('.error1').css("color","red")
+				 		$(this).css("border-color","red")
+				 	}
+				 });
+				 $("#userHeight").blur(function(){
+				 	if(rule1.test($(this).val())){
+				 		if ($(this).val() >0) {$('.error2').text('\nCorrect!')
+				 			$(this).css("border-color","green")
+				 		$('.error2').css("color","green")}
+				 		else{
+				 			$('.error2').text('\nWrong!')
+				 			$('.error2').css("color","red")
+				 			$(this).css("border-color","red")
+				 		}
+				 	}else{
+				 		$('.error2').text('\nWrong!')
+				 		$('.error2').css("color","red")
+				 		$(this).css("border-color","red")
+				 	}
+				 });
+				 $("#userWeight").blur(function(){
+				 	if(rule1.test($(this).val())){
+				 		if ($(this).val() >0) {$('.error3').text('\nCorrect!')
+				 			$(this).css("border-color","green")
+				 		$('.error3').css("color","green")}
+				 		else{
+				 			$('.error3').text('\nWrong!')
+				 			$('.error3').css("color","red")
+				 			$(this).css("border-color","red")
+				 		}
+				 	}else{
+				 		$('.error3').text('\nWrong!')
+				 		$('.error3').css("color","red")
+				 		$(this).css("border-color","red")
+				 	}
+				 });
+				});
+
+
+
+
+		</script>
+{%endblock%}

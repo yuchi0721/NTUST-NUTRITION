@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>資料表</title>
+</head>
+<body>
+<table border="3" cellpadding="5" cellspacing="5">
+	<th>ID</th><th>NAME</th><th>GENDER</th><th>AGE</th><th>HEIGHT</th><th>WEIGHT</th><th>USERId</th>
+
+	{%for user in users%}
+	
+		<tr>
+			<td>{{ user.id }}</td>	
+			<td>{{ user.userName }}</td>
+			<td>{{ user.userGender }}</td>	
+			<td>{{ user.userAge }}</td>	
+			<td>{{ user.userHeight }}</td>	
+			<td>{{ user.userWeight }}</td>
+			<td>{{ user.userId }}</td>
+			<td>
+                <a href="../edit/{{user.userId}}/edit" title="編輯一">編輯一</a>
+                <a href="/delete/{{user.userId}}" title="刪除">刪除</a>
+            </td>
+		</tr>
+
+	{%endfor%}
+</table>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block title %}歷史紀錄{% endblock %}
+{% block div %}
+<style type="text/css">
+
+</style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<div class="div_date">
+	<p>選擇日期
+
+		{% if isDatelistEmpty %}
+	<p> 目前都還沒有紀錄喔！快去紀錄下飲食吧！！</p>
+		{% else %}
+
+		<form action="/nutritionweb/history/{{userid}}/look/0" method="POST" name="find_data">
+			{% csrf_token %}
+			<select name="date">
+
+				{% for data in datelist %}
+				<option  value="{{data}}" >{{data}}</option>
+				{% endfor %}
+
+		</select>
+		<input type="submit" value="search">
+		{% endif %}
+	</form>
+</p>
+</div>
+<table  class="table table-hover table-sm " style="color: white;vertical-align: middle; " >
+
+
+	<tr><th>編號</th><th>食物</th><th>份數</th><th>熱量</th><th>碳水</th><th>蛋白質</th><th>脂肪</th><td></td></tr>
+
+	{%for user in userfood%}
+
+	<tr><td id="food_id" name="food_id">{{user.food_id}}</td>
+		<td id="food_name" name="{{user.food_name}}">{{user.food_name}}</td>
+		<td id="food_quantity" name="{{user.food_quantity}}">{{user.food_quantity}}</td>
+		<td id="food_power" name="{{user.food_power}}">{{user.food_power}}</td>
+		<td id="food_carbohydrate" name="{{user.food_carbohydrate}}">{{user.food_carbohydrate}}</td>
+		<td id="food_protein" name="{{user.food_protein}}">{{user.food_protein}}</td>
+		<td id="food_fat" name="{{user.food_fat}}">{{user.food_fat}}</td>
+		<td><a id="delete" href="/nutritionweb/history/{{userid}}/delete/{{user.food_id}}">刪除</a></td>
+	</tr>
+	{%endfor%}
+	<tr><th colspan="3">合計</th><td>{{power_sum}}</td><td>{{cy_sum}}</td><td>{{protein_sum}}</td><td>{{fat_sum}}</td><td></td></tr>
+</table>
+<script>
+	$("#delete").click(function() {
+  alert( "已成功刪除!!!" );
+});
+</script>
+{% endblock %}

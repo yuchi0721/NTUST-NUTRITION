@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<META HTTP-EQUIV="PRAGMA" CONTENT="NO-CACHE">
+    <META HTTP-EQUIV="EXPIRES" CONTENT="0">
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Taiwan Tech Nutrition</title>
+	<style>
+		body {
+			background-color:rgb(46,46,46);
+		}
+		#logo{
+			width:80%;
+		}
+		#logo_div{
+			font-size: 30px;
+			font-family: Microsoft JhengHei;
+			font-weight: bold;
+			color: white;
+
+		}
+		#userData_div{
+			margin-top: 10%;
+			text-align: center;
+			background-color: rgb(234,130,68);
+			color: white;
+			font-weight: bold;
+			font-family: Microsoft JhengHei;
+			border-radius: 10px;
+
+		}
+
+
+	</style>
+	{% load static %}
+</head>
+<body>
+	<div id="logo_div"><img src="{% static "images/LOGO2.png" %}" id="logo"></div>
+	<div id="userData_div">
+	<label style="margin-top: 10px;">TDEE計算機</label><br>
+	<label for="fheight">性別：</label>
+	<select id="userGender" >
+  		<option value="male">男</option>
+ 		<option value="femele">女</option>
+	</select><br><br>
+	<label for="fage">年齡：</label>
+	<input type="text" name="userAge" id="userAge"><br><br>
+	<label for="fheight">身高：</label>
+	<input type="text" name="userHeight"id="userHeight"><br><br>
+	<label for="fwehight">體重：</label>
+	<input type="text" name="userWeight"id="userWeight"><br><br>
+	<label>運動習慣：</label><select id="userHabbit" >
+  		<option value="rarely">幾乎不運動><</option>
+ 		<option value="seldom">一周1-3天</option>
+ 		<option value="often">一周3-5天</option>
+ 		<option value="alotof">一周6-7天</option>
+ 		<option value="everyday">一周7天</option>
+	</select><br><br>
+	<input type="button" onclick="calculateBmi()" value="計算bmi">
+	<input type="button" onclick="calculateBmr()" value="計算bmr"><br><br>
+	<label for="bmi">BMI：<label id="resultBmi"></label></label><br><br>
+	<label for="bmr">BMR：<label id="resultBmr"></label></label><br><br>
+	<label for="tdee">TDEE：<label id="resultTdee"></label></label><br><br>
+	</div>
+	
+	<h1></h1>
+
+</body>
+<script type="text/javascript">
+	var inHeight= document.getElementById('userHeight').value;
+	var inWeight= document.getElementById('userWeight').value;
+	function calculateBmi(){
+		var inHeight= document.getElementById('userHeight').value;
+		var inWeight= document.getElementById('userWeight').value;
+		var patt = /[0-9]+/;
+		
+		if (patt.test(inHeight) && patt.test(inWeight)) {
+			var h=Math.pow(inHeight/100,2)
+			var w=inWeight;
+			var bmi= w/h;
+			sendResultBmi(Math.round(bmi));
+		}else{
+			sendResultBmi("Format is wrong!!!");
+		}
+
+		
+	}
+	function calculateBmr(){
+		var inAge=document.getElementById('userAge').value;
+		var inHeight= document.getElementById('userHeight').value;
+		var inWeight= document.getElementById('userWeight').value;
+		var gender=document.getElementById('userGender').value;
+		var patt = /[0-9]+/;
+		if (patt.test(inWeight) && patt.test(inHeight) &&patt.test(inAge)) {
+			if (gender =="male") {
+				var maleBmr=(13.7* inWeight)+(5.0*inHeight)-(6.8*inAge)+66
+				sendResultBmr(Math.round(maleBmr));
+				calculateTdee(maleBmr);
+			}else{
+				var femaleBmr=(9.6*inWeight)+(1.8*inHeight)-(4.7*inAge)+655
+				sendResultBmr(Math.round(femaleBmr));
+				calculateTdee(femaleBmr);
+			}
+			
+		}else{
+			sendResultBmr("Format is wrong!!!")
+			calculateTdee("Format is wrong!!!");
+		}
+		
+
+		
+	}
+	function calculateTdee(userBmr){
+		var inHabbit=document.getElementById('userHabbit').value;
+		var tdee= 0;
+		if (userBmr >0) {
+			switch(inHabbit){
+				case "rarely":
+					tdee = userBmr*1.2;
+					break;
+				case "seldom":
+					tdee=userBmr*1.375;
+					break;
+
+				case "often":
+					tdee=userBmr*1.55;
+					break;
+
+				case "alotof":
+					tdee=userBmr*1.725;
+					break;
+
+				case "everyday":
+					tdee=userBmr*1.9;
+					break;
+
+			}
+			document.getElementById('resultTdee').innerHTML=tdee;
+		}else{document.getElementById('resultTdee').innerHTML="Format is wrong!!!";}
+		
+		
+
+	}
+	function sendResultBmi(result_1){
+		var num = document.getElementById("resultBmi")
+		num.innerHTML = result_1;
+	}
+	function sendResultBmr(result_2){
+		var num = document.getElementById("resultBmr")
+		num.innerHTML = result_2;
+	}
+</script>
+</html>

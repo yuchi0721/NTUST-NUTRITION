@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}選擇分析日期{% endblock %}
+{% block div %}
+<div class="div_date">
+		<form action="." method="POST" name="find_date" onclick="return false">
+			{% csrf_token %}
+			<p><img style="border-radius: 50%;width:15% "  id="userPicture" src=""><label id="displayName"></label><select id="userId" name="userId" ><option id="Id" ></option></select></p>
+			{% if isDatelistEmpty %}
+			<p> 目前都還沒有紀錄喔！快去紀錄下飲食吧！！</p>
+			{% else %}
+			<input type="submit" id="load_date"  value="載入日期">
+			{% endif %}
+		</form>
+		<div id="sel">
+			選擇日期
+			<select name="date" id="date">
+				{%for data in datelist%}
+				<option  value="{{data}}">{{data}}</option>
+			{%endfor%}
+		</select><br>
+		<button id="post_date">傳送分析日期</button>
+		<br>
+		</div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js"></script>
+<script>	
+	$(document).ready(function(){
+
+		$("#userId").hide();
+
+		liff.init({liffId: "1653914885-pVe9myRE"}).then(() => {
+				 	liff.ready.then(() => {
+				 		getProfile();
+				 	}).catch((err) => {
+				 	alert(err);
+				 	});
+				 }).catch((err) => {
+				 	alert(err);
+				 	});
+
+		$("#load_date").click(function(){
+			document.find_date.submit();
+		})
+		$("#post_date").click(function(){
+			txt="analyse_three"+$("#date").val();
+			liff.sendMessages([
+				 				{type:'text',
+				 				text:txt}
+				 				]).then(() => {
+				 					liff.closeWindow();
+				 				}).catch((err) => {
+				 					alert(err);
+				 				});
+
+		})
+		if ($("#date").val()==null) {$("#sel").hide();$("#post_date").hide();$("#load_date").show();}else{$("#post_date").show();;$("#load_date").hide();$("#sel").show();}
+	});
+
+// Get profile and display
+	function getProfile(){
+		liff.getProfile().then(function (profile) {
+			document.getElementById('userPicture').src = profile.pictureUrl;
+			document.getElementById('displayName').textContent = profile.displayName;
+			document.getElementById('Id').value = profile.userId;
+		}).catch(function (error) {
+			window.alert("Error getting profile: " + error);
+		});
+	}
+</script>
+{% endblock %}
